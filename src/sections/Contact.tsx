@@ -7,11 +7,13 @@ import {
   Copy, 
   Check, 
   MessageSquare,
-  AlertCircle
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import { personalProfile } from '../data/portfolioData';
 import { SectionHeading } from '../components/SectionHeading';
 import { LinkedinIcon, GithubIcon } from '../components/Icons';
+import { TiltCard } from '../components/TiltCard';
 
 interface ContactProps {
   onCopyText: (text: string, label: string) => void;
@@ -26,7 +28,7 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success'>('idle');
 
   const handleCopy = (text: string, fieldName: string) => {
     navigator.clipboard.writeText(text);
@@ -44,20 +46,28 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
 
     setIsSubmitting(true);
 
-    // Front-end interactive handler.
-    // NOTE FOR DEPLOYMENT: To connect this form directly to your email inbox,
-    // integrate EmailJS (https://www.emailjs.com/) or Formspree (https://formspree.io/)
-    // by submitting `formData` to your service ID / endpoint.
+    // Formulate a pre-filled mailto link so it directly opens the user's email client
+    const subject = encodeURIComponent(`Inquiry / Opportunity for Munnam Sateesh from ${formData.name}`);
+    const body = encodeURIComponent(
+      `Hi Sateesh,\n\n${formData.message}\n\nBest regards,\n${formData.name}\nEmail: ${formData.email}`
+    );
+    const mailtoUrl = `mailto:${personalProfile.email}?subject=${subject}&body=${body}`;
+
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setSubmitStatus('idle'), 6000);
-    }, 800);
+
+      // Attempt to launch the user's default email client
+      window.location.href = mailtoUrl;
+
+      setTimeout(() => {
+        setFormData({ name: '', email: '', message: '' });
+      }, 3000);
+    }, 600);
   };
 
   return (
-    <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-950 relative">
+    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 bg-dark-950 relative">
       <div className="max-w-7xl mx-auto">
         <SectionHeading
           badge="Get in Touch"
@@ -69,12 +79,16 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
           
           {/* Left Column: Direct Info & Socials */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 sm:p-8 rounded-2xl glass-card border border-slate-800 space-y-6">
+            <TiltCard
+              maxTilt={5}
+              glowColor="rgba(16, 185, 129, 0.12)"
+              className="p-7 sm:p-8 rounded-3xl glass-card border border-slate-800 space-y-6 hover:border-emerald-500/40"
+            >
               <div>
-                <h3 className="text-xl font-bold text-slate-100 mb-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-100 mb-1">
                   {personalProfile.name}
                 </h3>
-                <p className="text-xs font-mono text-emerald-400">
+                <p className="text-xs font-mono text-emerald-400 font-semibold">
                   {personalProfile.title} • 4 Yrs Exp
                 </p>
               </div>
@@ -84,34 +98,35 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                 
                 {/* Location */}
                 <div className="flex items-center gap-3.5 text-sm text-slate-300">
-                  <div className="w-10 h-10 rounded-xl bg-dark-850 border border-slate-800 flex items-center justify-center text-emerald-400 shrink-0">
-                    <MapPin className="w-4 h-4" />
+                  <div className="w-11 h-11 rounded-2xl bg-dark-900 border border-slate-800 flex items-center justify-center text-emerald-400 shrink-0">
+                    <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs text-slate-500 font-mono block">Location</span>
+                    <span className="text-[11px] text-slate-500 font-mono block">Location</span>
                     <span className="font-medium text-slate-200">{personalProfile.location}</span>
                   </div>
                 </div>
 
-                {/* Email with copy */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-dark-900 border border-slate-800/80 group">
+                {/* Email with copy & hover */}
+                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-dark-900/90 border border-slate-800/80 hover:border-emerald-500/30 transition-colors group">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-                      <Mail className="w-4 h-4" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Mail className="w-5 h-5" />
                     </div>
                     <div className="overflow-hidden">
-                      <span className="text-[11px] text-slate-500 font-mono block">Email</span>
+                      <span className="text-[10px] text-slate-500 font-mono block">Direct Email</span>
                       <a
                         href={`mailto:${personalProfile.email}`}
-                        className="text-xs sm:text-sm font-medium text-slate-200 hover:text-emerald-400 transition-colors truncate block"
+                        className="text-xs sm:text-sm font-semibold text-slate-200 hover:text-emerald-400 transition-colors truncate block"
                       >
                         {personalProfile.email}
                       </a>
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={() => handleCopy(personalProfile.email, 'Email')}
-                    className="p-2 rounded-lg bg-dark-800 text-slate-400 hover:text-slate-200 hover:bg-dark-700 transition-colors"
+                    className="p-2.5 rounded-xl bg-dark-800 text-slate-400 hover:text-emerald-400 hover:bg-dark-700 transition-all cursor-pointer active:scale-95"
                     title="Copy email address"
                   >
                     {copiedField === 'Email' ? (
@@ -123,24 +138,25 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                 </div>
 
                 {/* Phone with copy */}
-                <div className="flex items-center justify-between p-3 rounded-xl bg-dark-900 border border-slate-800/80 group">
+                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-dark-900/90 border border-slate-800/80 hover:border-cyan-500/30 transition-colors group">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0">
-                      <Phone className="w-4 h-4" />
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <Phone className="w-5 h-5" />
                     </div>
                     <div>
-                      <span className="text-[11px] text-slate-500 font-mono block">Phone</span>
+                      <span className="text-[10px] text-slate-500 font-mono block">Mobile / WhatsApp</span>
                       <a
                         href={`tel:${personalProfile.phone.replace(/\s+/g, '')}`}
-                        className="text-xs sm:text-sm font-medium text-slate-200 hover:text-cyan-400 transition-colors block"
+                        className="text-xs sm:text-sm font-semibold text-slate-200 hover:text-cyan-400 transition-colors block"
                       >
                         {personalProfile.phone}
                       </a>
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={() => handleCopy(personalProfile.phone, 'Phone')}
-                    className="p-2 rounded-lg bg-dark-800 text-slate-400 hover:text-slate-200 hover:bg-dark-700 transition-colors"
+                    className="p-2.5 rounded-xl bg-dark-800 text-slate-400 hover:text-cyan-400 hover:bg-dark-700 transition-all cursor-pointer active:scale-95"
                     title="Copy phone number"
                   >
                     {copiedField === 'Phone' ? (
@@ -153,16 +169,16 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
               </div>
 
               {/* Social Buttons */}
-              <div className="pt-4 border-t border-slate-850 space-y-3">
+              <div className="pt-4 border-t border-slate-800 space-y-3">
                 <span className="text-xs font-mono text-slate-400 font-semibold block">
-                  Professional Profiles
+                  Professional Networks
                 </span>
                 <div className="grid grid-cols-2 gap-3">
                   <a
                     href={personalProfile.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-dark-850 hover:bg-[#0077b5] text-slate-200 hover:text-white border border-slate-800 text-xs font-semibold transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-dark-900 hover:bg-[#0077b5] text-slate-200 hover:text-white border border-slate-800 hover:border-[#0077b5] text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
                   >
                     <LinkedinIcon className="w-4 h-4" />
                     <span>LinkedIn</span>
@@ -172,30 +188,37 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                     href={personalProfile.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-dark-850 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-800 text-xs font-semibold transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-dark-900 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-800 hover:border-slate-600 text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
                   >
                     <GithubIcon className="w-4 h-4" />
                     <span>GitHub</span>
                   </a>
                 </div>
               </div>
-            </div>
+            </TiltCard>
           </div>
 
           {/* Right Column: Contact Message Form */}
           <div className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-2xl glass-card border border-slate-800">
-              <div className="flex items-center gap-2 mb-6">
-                <MessageSquare className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-lg font-bold text-slate-100">
-                  Send a Direct Message
-                </h3>
+            <div className="p-7 sm:p-9 rounded-3xl glass-card border border-slate-800 animated-gradient-border">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-100">
+                    Send a Direct Message
+                  </h3>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    Dispatches directly to {personalProfile.email}
+                  </span>
+                </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-mono text-slate-400 mb-1.5 font-medium">
-                    Your Name *
+                  <label htmlFor="contact-name" className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
+                    Your Name / Organization *
                   </label>
                   <input
                     id="contact-name"
@@ -203,13 +226,13 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Sarah Jenkins (Recruiter / Engineering Mgr)"
-                    className="w-full px-4 py-3 rounded-xl bg-dark-900 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-colors"
+                    placeholder="e.g. Sarah Jenkins (Engineering Recruiter)"
+                    className="w-full px-4 py-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/70 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="block text-xs font-mono text-slate-400 mb-1.5 font-medium">
+                  <label htmlFor="contact-email" className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
                     Your Email Address *
                   </label>
                   <input
@@ -219,12 +242,12 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="name@company.com"
-                    className="w-full px-4 py-3 rounded-xl bg-dark-900 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-colors"
+                    className="w-full px-4 py-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/70 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="contact-message" className="block text-xs font-mono text-slate-400 mb-1.5 font-medium">
+                  <label htmlFor="contact-message" className="block text-xs font-mono text-slate-400 mb-1.5 font-semibold">
                     Message / Opportunity Details *
                   </label>
                   <textarea
@@ -233,35 +256,35 @@ export const Contact: React.FC<ContactProps> = ({ onCopyText }) => {
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Hello Sateesh, we are hiring for a Senior Java Full Stack Developer position and would love to connect..."
-                    className="w-full px-4 py-3 rounded-xl bg-dark-900 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/50 transition-colors resize-y"
+                    placeholder="Hello Sateesh, we came across your Java Full Stack profile and would like to discuss..."
+                    className="w-full px-4 py-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 text-slate-200 placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500/70 focus:ring-2 focus:ring-emerald-500/20 transition-all resize-y"
                   ></textarea>
                 </div>
 
                 {submitStatus === 'success' && (
-                  <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
-                    <Check className="w-4 h-4 shrink-0" />
-                    <span>Thank you for reaching out! You can also email directly at <strong>{personalProfile.email}</strong>.</span>
+                  <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-medium flex items-center gap-3 animate-in fade-in duration-300">
+                    <Check className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <span>Your email client has opened with your message ready to send! You can also email directly at <strong>{personalProfile.email}</strong>.</span>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-dark-950 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                  className="w-full py-4 rounded-2xl font-bold text-sm bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-dark-950 shadow-xl shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 hover:scale-[1.01]"
                 >
                   {isSubmitting ? (
-                    <span>Sending message...</span>
+                    <span>Opening email composer...</span>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Send Message</span>
+                      <span>Send Direct Message</span>
                     </>
                   )}
                 </button>
 
-                <p className="text-[11px] text-slate-500 font-mono text-center pt-2">
-                  ⚡ Prefer direct communication? Email: <strong>{personalProfile.email}</strong> | Tel: <strong>{personalProfile.phone}</strong>
+                <p className="text-[11px] text-slate-400 font-mono text-center pt-2">
+                  ⚡ Immediate contact: <a href={`mailto:${personalProfile.email}`} className="text-emerald-400 underline">{personalProfile.email}</a> • <a href={`tel:${personalProfile.phone.replace(/\s+/g, '')}`} className="text-emerald-400 underline">{personalProfile.phone}</a>
                 </p>
               </form>
             </div>

@@ -21,7 +21,7 @@ export const personalProfile: PersonalProfile = {
   phone: '+91 7675811508',
   linkedin: 'https://www.linkedin.com/in/sateesh-munnam-8ba81a243',
   github: 'https://github.com/Sateesh-Munnam',
-  resumePath: '/resume/MY-Resume.pdf',
+  resumePath: `${import.meta.env.BASE_URL}resume/MY-Resume.pdf`,
 };
 
 export const skillCategories: SkillCategory[] = [
