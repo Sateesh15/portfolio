@@ -1,11 +1,11 @@
-import { 
-  PersonalProfile, 
-  SkillCategory, 
-  ExperienceItem, 
-  FeaturedProject, 
-  AICloudSpotlight, 
-  EducationItem, 
-  CertificationItem 
+import {
+  PersonalProfile,
+  SkillCategory,
+  ExperienceItem,
+  FeaturedProject,
+  AICloudSpotlight,
+  EducationItem,
+  CertificationItem
 } from '../types';
 
 export const personalProfile: PersonalProfile = {
@@ -21,7 +21,7 @@ export const personalProfile: PersonalProfile = {
   phone: '+91 7675811508',
   linkedin: 'https://www.linkedin.com/in/sateesh-munnam-8ba81a243',
   github: 'https://github.com/Sateesh-Munnam',
-  resumePath: '/resume/Sateesh-Munnam-Java-Full-Stack-Developer-Resume.pdf',
+  resumePath: '/resume/MY-Resume.pdf',
 };
 
 export const skillCategories: SkillCategory[] = [
