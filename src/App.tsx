@@ -4,7 +4,7 @@ import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { ProjectModal } from './components/ProjectModal';
 import { ParticleBackground } from './components/ParticleBackground';
-import { CursorSpotlight } from './components/CursorSpotlight';
+import { ThreeCursor } from './components/ThreeCursor';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
@@ -63,9 +63,9 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-dark-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500/25 selection:text-emerald-300 relative">
-      {/* Animated Particle Constellation & Ambient Mouse Spotlight */}
+      {/* 3D Three.js Attention-Grabbing Cursor & Ambient Particle Layer */}
       <ParticleBackground />
-      <CursorSpotlight />
+      <ThreeCursor />
 
       {/* Top sticky navbar */}
       <Navbar activeSection={activeSection} />
