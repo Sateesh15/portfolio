@@ -8,6 +8,7 @@ import { ThreeCursor } from './components/ThreeCursor';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
+import { ArchitectureSection } from './sections/ArchitectureSection';
 import { Experience } from './sections/Experience';
 import { Projects } from './sections/Projects';
 import { AICloud } from './sections/AICloud';
@@ -75,6 +76,7 @@ export function App() {
         <Hero onCopySnippet={showToast} />
         <About />
         <Skills />
+        <ArchitectureSection />
         <Experience />
         <Projects onSelectProject={handleOpenProject} />
         <AICloud />
