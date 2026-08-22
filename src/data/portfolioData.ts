@@ -20,7 +20,7 @@ export const personalProfile: PersonalProfile = {
   email: 'munnamsateesh3@gmail.com',
   phone: '+91 7675811508',
   linkedin: 'https://www.linkedin.com/in/sateesh-munnam-8ba81a243',
-  github: 'https://github.com/Sateesh-Munnam',
+  github: 'https://github.com/Sateesh15',
   resumePath: `${import.meta.env.BASE_URL}resume/MY-Resume.pdf`,
 };
 
