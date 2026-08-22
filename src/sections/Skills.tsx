@@ -14,6 +14,33 @@ import { skillCategories } from '../data/portfolioData';
 import { SectionHeading } from '../components/SectionHeading';
 import { TechBadge } from '../components/TechBadge';
 import { TiltCard } from '../components/TiltCard';
+import { sounds } from '../components/SoundEffects';
+
+// Proficiency mapping for core enterprise skills
+const PROFICIENCY_MAP: Record<string, number> = {
+  'Java 17': 96,
+  'Java 8': 95,
+  'Spring Boot': 95,
+  'Microservices': 92,
+  'REST APIs': 96,
+  'Spring Data JPA': 92,
+  'Hibernate': 90,
+  'React.js': 88,
+  'Vue.js': 90,
+  'TypeScript': 86,
+  'MySQL': 92,
+  'MongoDB': 85,
+  'AWS': 85,
+  'Azure': 85,
+  'Azure OpenAI': 88,
+  'Azure Entra ID (Azure AD)': 90,
+  'MSAL (Microsoft Authentication Library)': 88,
+  'Splunk (Log Analysis & Monitoring)': 90,
+  'JUnit': 94,
+  'Mockito': 92,
+  'Selenium': 86,
+  'Postman': 95,
+};
 
 export const Skills: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -55,7 +82,11 @@ export const Skills: React.FC = () => {
         {/* Category Filter Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => {
+              setSelectedCategory('all');
+              sounds.playClick();
+            }}
+            onMouseEnter={() => sounds.playHover()}
             className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all cursor-pointer active:scale-95 ${
               selectedCategory === 'all'
                 ? 'bg-emerald-500 text-dark-950 font-bold shadow-lg shadow-emerald-500/25 scale-105'
@@ -67,7 +98,11 @@ export const Skills: React.FC = () => {
           {skillCategories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
+              onClick={() => {
+                setSelectedCategory(category.id);
+                sounds.playClick();
+              }}
+              onMouseEnter={() => sounds.playHover()}
               className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium transition-all cursor-pointer active:scale-95 ${
                 selectedCategory === category.id
                   ? 'bg-emerald-500 text-dark-950 font-bold shadow-lg shadow-emerald-500/25 scale-105'
@@ -109,16 +144,25 @@ export const Skills: React.FC = () => {
                   {category.description}
                 </p>
 
-                {/* Tech Pills */}
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <TechBadge
-                      key={skill}
-                      name={skill}
-                      variant="default"
-                      size="sm"
-                    />
-                  ))}
+                {/* Tech Pills with Micro Proficiency Bars */}
+                <div className="space-y-3">
+                  {category.skills.map((skill) => {
+                    const proficiency = PROFICIENCY_MAP[skill] || 88;
+                    return (
+                      <div key={skill} className="space-y-1">
+                        <div className="flex items-center justify-between text-xs font-mono">
+                          <span className="text-slate-200 font-semibold">{skill}</span>
+                          <span className="text-emerald-400/90 text-[11px] font-bold">{proficiency}%</span>
+                        </div>
+                        <div className="w-full h-1.5 rounded-full bg-dark-900 overflow-hidden border border-slate-800/80">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-sky-400 transition-all duration-1000 shimmer-effect"
+                            style={{ width: `${proficiency}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -128,7 +172,7 @@ export const Skills: React.FC = () => {
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   Enterprise Grade
                 </span>
-                <span className="text-emerald-400 font-semibold">4 Yrs Applied</span>
+                <span className="text-emerald-400 font-semibold">4 Yrs Production</span>
               </div>
             </TiltCard>
           ))}

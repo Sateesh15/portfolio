@@ -5,6 +5,7 @@ import { Toast } from './components/Toast';
 import { ProjectModal } from './components/ProjectModal';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ThreeCursor } from './components/ThreeCursor';
+import { ScrollToTop } from './components/ScrollToTop';
 import { Hero } from './sections/Hero';
 import { About } from './sections/About';
 import { Skills } from './sections/Skills';
@@ -84,6 +85,9 @@ export function App() {
         <ResumeSection />
         <Contact onCopyText={showToast} />
       </main>
+
+      {/* Circular Scroll-to-Top Progress Button */}
+      <ScrollToTop />
 
       {/* Footer */}
       <Footer />
